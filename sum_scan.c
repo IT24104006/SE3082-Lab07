@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
     /* Every process allocates only its own chunk */
     int *local_chunk = (int *)malloc(chunk_size * sizeof(int));
 
+    MPI_Barrier(MPI_COMM_WORLD);
     double start = MPI_Wtime();
 
     /* SCATTER: root sends chunk_size elements to EACH process */

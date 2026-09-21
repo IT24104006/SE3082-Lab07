@@ -1,0 +1,21 @@
+sum_bcast       np=2  avg time = 0.0029 sec
+sum_scatter     np=2  avg time = 0.0022 sec
+sum_gather      np=2  avg time = 0.0016 sec
+sum_reduce      np=2  avg time = 0.0018 sec
+sum_allreduce   np=2  avg time = 0.0021 sec
+sum_scan        np=2  avg time = 0.0017 sec
+
+sum_bcast       np=4  avg time = 0.0065 sec
+sum_scatter     np=4  avg time = 0.0017 sec
+sum_gather      np=4  avg time = 0.0015 sec
+sum_reduce      np=4  avg time = 0.0015 sec
+sum_allreduce   np=4  avg time = 0.0014 sec
+sum_scan        np=4  avg time = 0.0014 sec
+
+sum_bcast       np=8  avg time = 0.0073 sec
+sum_scatter     np=8  avg time = 0.0013 sec
+sum_gather      np=8  avg time = 0.0014 sec
+sum_reduce      np=8  avg time = 0.0014 sec
+sum_allreduce   np=8  avg time = 0.0012 sec
+sum_scan        np=8  avg time = 0.0013 sec
+
