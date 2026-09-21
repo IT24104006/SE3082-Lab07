@@ -13,7 +13,6 @@ int main(int argc, char **argv) {
 
     int chunk_size = N / size;
 
-    /* Only root allocates the full array */
     int *array = NULL;
     if (rank == 0) {
         array = (int *)malloc(N * sizeof(int));
@@ -22,12 +21,10 @@ int main(int argc, char **argv) {
         printf("Root filled array with values 1 to %d\n", N);
     }
 
-    /* Every process allocates only its own chunk */
     int *local_chunk = (int *)malloc(chunk_size * sizeof(int));
 
     double start = MPI_Wtime();
 
-    /* SCATTER: root sends chunk_size elements to EACH process */
     MPI_Scatter(array, chunk_size, MPI_INT,
                 local_chunk, chunk_size, MPI_INT,
                 0, MPI_COMM_WORLD);
@@ -40,7 +37,7 @@ int main(int argc, char **argv) {
     printf("  Rank %d: summed %d elements => local_sum = %lld\n",
            rank, chunk_size, local_sum);
 
-    /* Collect results using point-to-point communication (unchanged) */
+    /* Collect results using point-to-point communication */
     if (rank != 0) {
         MPI_Send(&local_sum, 1, MPI_LONG_LONG, 0, 0, MPI_COMM_WORLD);
     } else {
