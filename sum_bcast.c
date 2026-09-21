@@ -11,10 +11,8 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    /* Every process allocates the FULL array (downside of broadcast) */
     int *array = (int *)malloc(N * sizeof(int));
 
-    /* Root fills the array with values 1 to N */
     if (rank == 0) {
         for (int i = 0; i < N; i++)
             array[i] = i + 1;
@@ -23,10 +21,8 @@ int main(int argc, char **argv) {
 
     double start = MPI_Wtime();
 
-    /* BROADCAST: root sends the entire array to ALL processes */
     MPI_Bcast(array, N, MPI_INT, 0, MPI_COMM_WORLD);
 
-    /* Each process sums its own portion */
     int chunk_size = N / size;
     int start_idx = rank * chunk_size;
     int end_idx = start_idx + chunk_size;
@@ -38,7 +34,6 @@ int main(int argc, char **argv) {
     printf("  Rank %d: summed indices [%d, %d) => local_sum = %lld\n",
            rank, start_idx, end_idx, local_sum);
 
-    /* Collect results using point-to-point communication */
     if (rank != 0) {
         MPI_Send(&local_sum, 1, MPI_LONG_LONG, 0, 0, MPI_COMM_WORLD);
     } else {
