@@ -13,7 +13,6 @@ int main(int argc, char **argv) {
 
     int chunk_size = N / size;
 
-    /* Only root allocates the full array */
     int *array = NULL;
     if (rank == 0) {
         array = (int *)malloc(N * sizeof(int));
@@ -22,22 +21,18 @@ int main(int argc, char **argv) {
         printf("Root filled array with values 1 to %d\n", N);
     }
 
-    /* Every process allocates only its own chunk */
     int *local_chunk = (int *)malloc(chunk_size * sizeof(int));
 
-    /* Root allocates space for one partial sum per process */
     long long *all_sums = NULL;
     if (rank == 0)
         all_sums = (long long *)malloc(size * sizeof(long long));
 
     double start = MPI_Wtime();
 
-    /* SCATTER: root sends chunk_size elements to EACH process */
     MPI_Scatter(array, chunk_size, MPI_INT,
                 local_chunk, chunk_size, MPI_INT,
                 0, MPI_COMM_WORLD);
 
-    /* Each process sums its own chunk */
     long long local_sum = 0;
     for (int i = 0; i < chunk_size; i++)
         local_sum += local_chunk[i];
@@ -45,13 +40,11 @@ int main(int argc, char **argv) {
     printf("  Rank %d: summed %d elements => local_sum = %lld\n",
            rank, chunk_size, local_sum);
 
-    /* GATHER: collect one local_sum from every process, in rank order */
     MPI_Gather(&local_sum, 1, MPI_LONG_LONG,
                all_sums, 1, MPI_LONG_LONG,
                0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        /* Gather does no computation - root still adds the values */
         long long total_sum = 0;
         for (int r = 0; r < size; r++)
             total_sum += all_sums[r];
